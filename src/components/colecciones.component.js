@@ -40,7 +40,7 @@ export default function Colecciones() {
       <div className="d-flex flex-wrap">
         {albums.map(album => (
           <AlbumCard
-            key={album.id}
+            key={album._id}
             album={album}
             isAdded={true}    // ya está en userAlbums
             onAdd={() => {}}  // o rediriges a detalles

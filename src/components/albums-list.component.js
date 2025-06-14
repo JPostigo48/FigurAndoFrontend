@@ -17,13 +17,13 @@ export function AlbumCard({ album, isAdded, onAdd }) {
         <h5 className="card-title">{album.nombre}</h5>
         <p className="card-text text-muted mb-2">{album.editorial}</p>
         {isAdded ? (
-          <Link to={`/my/albums/${album.id}`} className="btn btn-sm btn-primary mt-auto">
+          <Link to={`/my/albums/${album._id}`} className="btn btn-sm btn-primary mt-auto">
             Ver detalles
           </Link>
         ) : (
           <button
             className="btn btn-sm btn-success mt-auto"
-            onClick={() => onAdd(album.id)}
+            onClick={() => onAdd(album._id)}
           >
             Añadir
           </button>
@@ -42,8 +42,11 @@ export default function AlbumsList() {
   // Carga de todos los álbumes
   useEffect(() => {
     axios
-      .get(`${API}/albumes/`)
-      .then((res) => setAlbums(res.data))
+      .get(`${API}/albumes`)
+      .then((res) => {
+        // console.log(res.data);
+        setAlbums(res.data)
+      })
       .catch((err) => {
         console.error("Error al cargar álbumes:", err);
         setError("No se pudieron cargar los álbumes.");
@@ -55,13 +58,14 @@ export default function AlbumsList() {
     const savedUser = localStorage.getItem("user");
     if (!savedUser) return;
     const user = JSON.parse(savedUser);
+    // console.log(user)
     async function fetchAlbumsIds() {
       try {
         const res = await axios.post(
           "http://localhost:5000/usuarios/albumesIds",
           { userId: user.id }          
         );
-        console.log(res.data)
+        // console.log(res.data);
         setUserAlbums(res.data || []); 
       } catch (err) {
         console.error("Error cargando álbumes IDs:", err);
@@ -84,7 +88,7 @@ export default function AlbumsList() {
       // 1) Actualiza localStorage con el usuario recibido
       localStorage.setItem('user', JSON.stringify(data.usuario));
       // 2) Actualiza estado para re-render
-      setUserAlbums(data.usuario.albumesUsuario.map(a => a.id));
+      setUserAlbums(data.usuario.albumesUsuario.map(a => a._id));
       alert('Álbum y figuras inicializadas.');
     } catch (err) {
       console.error(err);
@@ -100,9 +104,9 @@ export default function AlbumsList() {
       <div className="d-flex flex-wrap">
         {albums.map((alb) => (
           <AlbumCard
-            key={alb.id}
+            key={alb._id}
             album={alb}
-            isAdded={userAlbums.includes(alb.id)}
+            isAdded={userAlbums.includes(alb._id)}
             onAdd={handleAdd}
           />
         ))}
