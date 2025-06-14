@@ -82,7 +82,7 @@ export default function ViewFigureList() {
             <div
               key={figura._id}
               className="card m-2 d-flex flex-column"
-              style={{ width: "180px" }}
+              style={{ width: "150px" }}
             >
               <div
                 className="p-2 text-center"
@@ -110,7 +110,7 @@ export default function ViewFigureList() {
                 style={{ backgroundColor: footerBg }}
               >
                 <span style={{ margin: "0 12px", fontWeight: "bold" }}>
-                  {count}
+                  {"Cantidad: " + count}
                 </span>
               </div>
             </div>
