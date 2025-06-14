@@ -60,10 +60,25 @@ export default function FigureList() {
     }
   };
 
+  // Nuevo handler: genera y copia el link
+  const handleCopyLink = () => {
+    const saved = localStorage.getItem("user");
+    if (!saved) {
+      return alert("No estás logueado.");
+    }
+    const user = JSON.parse(saved);
+    const userId = user.id || user._id;
+    const link = `${window.location.origin}/${userId}/${albumId}`;
+
+    navigator.clipboard.writeText(link)
+      .then(() => alert(`Link copiado:\n${link}`))
+      .catch(() => alert("Error copiando al portapapeles"));
+  };
+
   return (
     <div>
       <h2>Figuras del Álbum</h2>
-      <div className="d-flex flex-wrap">
+      <div className="d-flex flex-wrap justify-content-center">
       {items.map(({ figura, count }) => {
         const headerBg = tipoColors[figura.tipo] || "#FFF";
         const footerBg = footerColor(count);
@@ -130,6 +145,15 @@ export default function FigureList() {
           </div>
         );
       })}
+      </div>
+      {/* Botón Generar Link */}
+      <div className="text-center" style={{ marginTop: 20, marginBottom: 40 }}>
+        <button
+          className="btn btn-info"
+          onClick={handleCopyLink}
+        >
+          Obtener mi link
+        </button>
       </div>
     </div>
   );
