@@ -1,6 +1,7 @@
 // src/components/create-album.component.js
 import React, { Component } from "react";
 import axios from "axios";
+import { API } from "../api/api";
 
 export default class CreateAlbum extends Component {
   constructor(props) {
@@ -55,7 +56,7 @@ export default class CreateAlbum extends Component {
 
     try {
       const payload = { album: nombre, code: currentIndex, tipo: currentTipo };
-      const res = await axios.post("http://localhost:5000/figuras/add", payload);
+      const res = await axios.post(`${API}/figuras/add`, payload);
       const nuevaFigura = res.data;
 
       this.setState(prev => ({
@@ -85,7 +86,7 @@ export default class CreateAlbum extends Component {
 
     const newAlbum = { nombre, editorial, imagen, figuras: figurasIds };
     try {
-      const res = await axios.post("http://localhost:5000/albumes/add", newAlbum);
+      const res = await axios.post(`${API}/albumes/add`, newAlbum);
       console.log("Álbum creado:", res.data);
       window.location = "/";
     } catch (err) {

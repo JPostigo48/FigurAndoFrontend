@@ -1,6 +1,7 @@
 import { Component } from "react";
 import axios from "axios";
 import { Navigate } from "react-router-dom";  
+import { API } from "../api/api";
 
 export default class LoginUser extends Component {
   constructor(props) {
@@ -27,7 +28,7 @@ export default class LoginUser extends Component {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/usuarios/login",
+        `${API}/usuarios/login`,
         {
           nombre: this.state.nombre,
           contra: this.state.contra

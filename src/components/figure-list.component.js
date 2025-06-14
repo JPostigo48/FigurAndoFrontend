@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { API } from "../api/api";
 
 export default function FigureList() {
   const { id: albumId } = useParams();
@@ -12,7 +13,7 @@ export default function FigureList() {
     async function fetchFigures() {
       try {
         const res = await axios.get(
-          `http://localhost:5000/usuarios/figuras?albumId=${albumId}`,
+          `${API}/usuarios/figuras?albumId=${albumId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         // res.data = [ { figura: { _id, code, tipo }, count }, … ]
@@ -28,7 +29,7 @@ export default function FigureList() {
   const updateCount = async (figuraId, delta) => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/usuarios/update-figura",
+        `${API}/usuarios/update-figura`,
         { figuraId, delta },
         { headers: { Authorization: `Bearer ${token}` } }
       );

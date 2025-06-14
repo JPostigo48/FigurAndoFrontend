@@ -3,10 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from './components/navbar.component';
-import CreateExercise from './components/create-exercise.component';
-import EditExercise from './components/edit-exercise.component';
 import CreateUser from './components/create-user.component';
-import ExerciseList from './components/exercises-list.component';
 import LoginUser from './components/login.component';
 import CreateAlbum from './components/create-album.component';
 import Colecciones from './components/colecciones.component';
@@ -36,7 +33,6 @@ function App() {
           {/* En v6 ya no existe exact ni prop Component */}
           <Route path="/" element={<AlbumsList />} />
           <Route path="/my/albums" element={<Colecciones />} />
-          <Route path="/edit/:id" element={<EditExercise />} />
           <Route path="/my/albums/:id" element={<FigureList />} />
           <Route path="/crearalbum" element={<CreateAlbum />} />
           <Route path="/user" element={<CreateUser />} />

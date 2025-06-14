@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { AlbumCard } from "./albums-list.component";
 import { useNavigate } from "react-router-dom";
+import { API } from "../api/api";
 
 // Componente principal que lista las colecciones del usuario
 export default function Colecciones() {
@@ -17,7 +18,7 @@ export default function Colecciones() {
     async function fetchAlbums() {
       try {
         const res = await axios.post(
-          "http://localhost:5000/usuarios/albumes",
+          `${API}/usuarios/albumes`,
           { userId: user._id }          
         );
         setAlbums(res.data);            // aquí recibimos el array de álbumes

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { API } from "../api/api";
 
 export function AlbumCard({ album, isAdded, onAdd }) {
   return (
@@ -41,7 +42,7 @@ export default function AlbumsList() {
   // Carga de todos los álbumes
   useEffect(() => {
     axios
-      .get("http://localhost:5000/albumes/")
+      .get(`${API}/albumes/`)
       .then((res) => setAlbums(res.data))
       .catch((err) => {
         console.error("Error al cargar álbumes:", err);
@@ -75,7 +76,7 @@ export default function AlbumsList() {
     try {
       const token = localStorage.getItem('token');
       const { data } = await axios.post(
-        "http://localhost:5000/usuarios/add-album",
+        `${API}/usuarios/add-album`,
         { albumId },
         { headers: { Authorization: `Bearer ${token}` } }
       );

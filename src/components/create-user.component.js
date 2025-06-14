@@ -1,5 +1,6 @@
 import { Component } from "react";
 import axios from "axios";
+import { API } from "../api/api";
 export default class CreateUser extends Component{
     
     constructor(props){
@@ -35,7 +36,7 @@ export default class CreateUser extends Component{
             nombre: '',
             contra: '',
         });
-        axios.post('http://localhost:5000/usuarios/add', user)
+        axios.post(`${API}/usuarios/add`, user)
         .then(res => console.log(res.data));
         
     }
