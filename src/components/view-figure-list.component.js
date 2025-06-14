@@ -12,8 +12,8 @@ export default function ViewFigureList() {
 
   // Colores
   const tipoColors = {
-    normal:            "#D3D3D3",
-    dorado_normal:     "#FFECB3",
+    normal:            "#efefef",  // gris plomo suave
+    dorado_normal:     "#fff2cb",  // dorado suave
     dorado_escarchado: "#FFECB3",
     lenticular:        "#E1BEE7",
     troquelada:        "#B2DFDB",
@@ -89,7 +89,7 @@ export default function ViewFigureList() {
                 style={{
                   backgroundColor: headerBg,
                   borderTopLeftRadius: "0.25rem",
-                  borderTopRightRadius: "0.25rem"
+                  borderTopRightRadius: "0.25rem", height: "60px"
                 }}
               >
                 <div
