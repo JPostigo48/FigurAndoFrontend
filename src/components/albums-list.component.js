@@ -61,6 +61,7 @@ export default function AlbumsList() {
           "http://localhost:5000/usuarios/albumesIds",
           { userId: user.id }          
         );
+        console.log(res.data)
         setUserAlbums(res.data || []); 
       } catch (err) {
         console.error("Error cargando álbumes IDs:", err);
