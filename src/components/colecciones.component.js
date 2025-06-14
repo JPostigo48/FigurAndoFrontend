@@ -19,7 +19,7 @@ export default function Colecciones() {
       try {
         const res = await axios.post(
           `${API}/usuarios/albumes`,
-          { userId: user._id }          
+          { userId: user.id }          
         );
         setAlbums(res.data);            // aquí recibimos el array de álbumes
       } catch (err) {
@@ -40,7 +40,7 @@ export default function Colecciones() {
       <div className="d-flex flex-wrap">
         {albums.map(album => (
           <AlbumCard
-            key={album._id}
+            key={album.id}
             album={album}
             isAdded={true}    // ya está en userAlbums
             onAdd={() => {}}  // o rediriges a detalles

@@ -62,9 +62,9 @@ export default class CreateAlbum extends Component {
       this.setState(prev => ({
         figurasDisplay: [
           ...prev.figurasDisplay,
-          { _id: nuevaFigura._id, tipo: currentTipo, index: currentIndex }
+          { id: nuevaFigura.id, tipo: currentTipo, index: currentIndex }
         ],
-        figurasIds: [...prev.figurasIds, nuevaFigura._id],
+        figurasIds: [...prev.figurasIds, nuevaFigura.id],
         currentTipo: "",
         currentIndex: ""
       }));
@@ -142,7 +142,7 @@ export default class CreateAlbum extends Component {
           {figurasDisplay.length === 0 && <p>No hay figuras agregadas.</p>}
           <ul className="list-group mb-3">
             {figurasDisplay.map(f => (
-              <li key={f._id} className="list-group-item">
+              <li key={f.id} className="list-group-item">
                 <strong>{
                   tipoOptions.find(o => o.value === f.tipo)?.label || f.tipo
                 }</strong> – {f.index}

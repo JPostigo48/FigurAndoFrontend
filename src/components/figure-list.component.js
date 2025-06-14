@@ -16,7 +16,6 @@ export default function FigureList() {
           `${API}/usuarios/figuras?albumId=${albumId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        // res.data = [ { figura: { _id, code, tipo }, count }, … ]
         setItems(res.data);
       } catch (err) {
         console.error("Error cargando figuras:", err);
@@ -37,7 +36,7 @@ export default function FigureList() {
       const { figuraId: id, count } = res.data;
       setItems((prev) =>
         prev.map((it) =>
-          it.figura._id === id ? { ...it, count } : it
+          it.figura.id === id ? { ...it, count } : it
         )
       );
     } catch (err) {
@@ -51,7 +50,7 @@ export default function FigureList() {
       <div className="d-flex flex-wrap">
         {items.map(({ figura, count }) => (
           <div
-            key={figura._id}
+            key={figura.id}
             className="card m-2 d-flex flex-column"
             style={{ width: "180px" }}
           >
@@ -82,14 +81,14 @@ export default function FigureList() {
               <button
                 className="btn btn-sm btn-outline-secondary"
                 disabled={count <= 0}
-                onClick={() => updateCount(figura._id, -1)}
+                onClick={() => updateCount(figura.id, -1)}
               >
                 &minus;
               </button>
               <span style={{ margin: "0 12px" }}>{count}</span>
               <button
                 className="btn btn-sm btn-outline-secondary"
-                onClick={() => updateCount(figura._id, +1)}
+                onClick={() => updateCount(figura.id, +1)}
               >
                 +
               </button>

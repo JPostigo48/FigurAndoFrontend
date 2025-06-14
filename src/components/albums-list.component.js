@@ -17,13 +17,13 @@ export function AlbumCard({ album, isAdded, onAdd }) {
         <h5 className="card-title">{album.nombre}</h5>
         <p className="card-text text-muted mb-2">{album.editorial}</p>
         {isAdded ? (
-          <Link to={`/my/albums/${album._id}`} className="btn btn-sm btn-primary mt-auto">
+          <Link to={`/my/albums/${album.id}`} className="btn btn-sm btn-primary mt-auto">
             Ver detalles
           </Link>
         ) : (
           <button
             className="btn btn-sm btn-success mt-auto"
-            onClick={() => onAdd(album._id)}
+            onClick={() => onAdd(album.id)}
           >
             Añadir
           </button>
@@ -59,7 +59,7 @@ export default function AlbumsList() {
       try {
         const res = await axios.post(
           "http://localhost:5000/usuarios/albumesIds",
-          { userId: user._id }          
+          { userId: user.id }          
         );
         setUserAlbums(res.data || []); 
       } catch (err) {
@@ -83,7 +83,7 @@ export default function AlbumsList() {
       // 1) Actualiza localStorage con el usuario recibido
       localStorage.setItem('user', JSON.stringify(data.usuario));
       // 2) Actualiza estado para re-render
-      setUserAlbums(data.usuario.albumesUsuario.map(a => a._id));
+      setUserAlbums(data.usuario.albumesUsuario.map(a => a.id));
       alert('Álbum y figuras inicializadas.');
     } catch (err) {
       console.error(err);
@@ -99,9 +99,9 @@ export default function AlbumsList() {
       <div className="d-flex flex-wrap">
         {albums.map((alb) => (
           <AlbumCard
-            key={alb._id}
+            key={alb.id}
             album={alb}
-            isAdded={userAlbums.includes(alb._id)}
+            isAdded={userAlbums.includes(alb.id)}
             onAdd={handleAdd}
           />
         ))}
