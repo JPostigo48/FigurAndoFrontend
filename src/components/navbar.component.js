@@ -1,37 +1,22 @@
-import { Component } from "react";
+// src/components/navbar.component.js
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 export default class Navbar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: null
+      menuOpen: false   // controla el collapse
     };
   }
 
-  componentDidMount() {
-    // Supongamos que guardaste al usuario así en el login:
-    // localStorage.setItem('user', JSON.stringify(data.usuario));
-    const saved = localStorage.getItem("user");
-    if (saved) {
-      try {
-        // console.error(saved);
-        this.setState({ user: JSON.parse(saved) });
-      } catch (err) {
-        console.error("Error parsing stored user", err);
-      }
-    }
-  }
-
-  handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    // opcional: también puedes redirigir a "/" o forzar recarga
-    this.setState({ user: null });
+  toggleMenu = () => {
+    this.setState(prev => ({ menuOpen: !prev.menuOpen }));
   };
 
   render() {
     const { user, onLogout } = this.props;
+    const { menuOpen } = this.state;
 
     return (
       <nav
@@ -45,7 +30,7 @@ export default class Navbar extends Component {
           className="navbar-brand"
           to="/"
           style={{
-            color: "White",
+            color: "white",
             fontSize: "24px",
             fontWeight: "bold",
             fontFamily: "Papyrus"
@@ -53,31 +38,51 @@ export default class Navbar extends Component {
         >
           FigurAndo
         </Link>
+
+        {/* Toggler controlado */}
         <button
           className="navbar-toggler"
           type="button"
-          data-toggle="collapse"
-          data-target="#navbarNavAltMarkup"
-          aria-controls="navbarNavAltMarkup"
-          aria-expanded="false"
+          onClick={this.toggleMenu}
           aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon" />
         </button>
-        <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+
+        {/* Collapse controlado */}
+        <div className={`collapse navbar-collapse${menuOpen ? " show" : ""}`}>
           <div className="navbar-nav">
             <Link className="nav-link" to="/my/albums">
               Mis colecciones
             </Link>
 
-            {user && user.rol === "admin" && <Link className="nav-link" to="/crearalbum">
-              Crear Album
-            </Link>}
-            
+            {user && user.rol === "admin" && (
+              <Link className="nav-link" to="/crearalbum">
+                Crear Álbum
+              </Link>
+            )}
 
-            {user && user.rol === "admin" && <Link className="nav-link" to="/user">Crear Usuario</Link>}
-            {!user && <Link className="nav-link" to="/login">Ingresar</Link>}
-            {user && <span className="nav-link" onClick={onLogout}>Cerrar Sesión</span>}
+            {user && user.rol === "admin" && (
+              <Link className="nav-link" to="/user">
+                Crear Usuario
+              </Link>
+            )}
+
+            {!user && (
+              <Link className="nav-link" to="/login">
+                Ingresar
+              </Link>
+            )}
+
+            {user && (
+              <span
+                className="nav-link"
+                style={{ cursor: "pointer" }}
+                onClick={onLogout}
+              >
+                Cerrar Sesión
+              </span>
+            )}
           </div>
         </div>
       </nav>

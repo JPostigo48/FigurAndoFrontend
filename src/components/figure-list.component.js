@@ -88,7 +88,7 @@ export default function FigureList() {
           <div
             key={figura._id}
             className="card m-2 d-flex flex-column"
-            style={{ width: "180px" }}
+            style={{ width: "150px" }}
           >
             {/* Cabecera con fondo según tipo */}
             <div

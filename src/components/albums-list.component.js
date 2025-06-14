@@ -17,7 +17,10 @@ export function AlbumCard({ album, isAdded, onAdd }) {
         <h5 className="card-title">{album.nombre}</h5>
         <p className="card-text text-muted mb-2">{album.editorial}</p>
         {isAdded ? (
-          <Link to={`/my/albums/${album._id}`} className="btn btn-sm btn-primary mt-auto">
+          <Link
+            to={`/my/albums/${album._id}`}
+            className="btn btn-sm btn-primary mt-auto"
+          >
             Ver detalles
           </Link>
         ) : (
@@ -35,7 +38,7 @@ export function AlbumCard({ album, isAdded, onAdd }) {
 
 export default function AlbumsList() {
   const [albums, setAlbums] = useState([]);
-  const [userAlbums, setUserAlbums] = useState([]); 
+  const [userAlbums, setUserAlbums] = useState([]);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -44,64 +47,67 @@ export default function AlbumsList() {
     axios
       .get(`${API}/albumes`)
       .then((res) => {
-        // console.log(res.data);
-        setAlbums(res.data)
+        setAlbums(res.data);
+        setError("");
       })
       .catch((err) => {
         console.error("Error al cargar álbumes:", err);
-        setError("No se pudieron cargar los álbumes.");
+        setError("No se pudieron cargar los álbumes: " + err.message);
       });
   }, []);
 
-  // Carga de álbumes del usuario desde localStorage
+  // Carga de álbumes del usuario
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (!savedUser) return;
     const user = JSON.parse(savedUser);
-    // console.log(user)
-    async function fetchAlbumsIds() {
-      try {
-        const res = await axios.post(
-          "http://localhost:5000/usuarios/albumesIds",
-          { userId: user.id }          
-        );
-        // console.log(res.data);
-        setUserAlbums(res.data || []); 
-      } catch (err) {
-        console.error("Error cargando álbumes IDs:", err);
-        setUserAlbums([]);  
-      }
-    }
 
-    fetchAlbumsIds();
+    axios
+      .post(
+        `${API}/usuarios/albumesIds`,
+        { userId: user.id },
+      )
+      .then((res) => {
+        setUserAlbums(res.data || []);
+        setError("");
+      })
+      .catch((err) => {
+        console.error("Error cargando álbumes IDs:", err);
+        setError("No se pudieron cargar tus colecciones: " + err.message);
+      });
   }, []);
 
-  // Handler para añadir un álbum a las colecciones del usuario
+  // Handler para añadir un álbum
   const handleAdd = async (albumId) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const { data } = await axios.post(
         `${API}/usuarios/add-album`,
         { albumId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      // 1) Actualiza localStorage con el usuario recibido
-      localStorage.setItem('user', JSON.stringify(data.usuario));
-      // 2) Actualiza estado para re-render
+      localStorage.setItem("user", JSON.stringify(data.usuario));
       setUserAlbums(data.usuario.albumesUsuario.map(a => a._id));
-      alert('Álbum y figuras inicializadas.');
+      setError("");
+      alert("Álbum y figuras inicializadas.");
     } catch (err) {
       console.error(err);
-      alert('No se pudo añadir el álbum.');
+      setError("No se pudo añadir el álbum: " + (err.response?.data.error || err.message));
     }
   };
-  
 
   return (
     <div>
       <h2>Todos los Álbumes</h2>
-      {error && <div className="alert alert-danger">{error}</div>}
-      <div className="d-flex flex-wrap">
+
+      {/* Mensaje de error */}
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
+
+      <div className="d-flex flex-wrap justify-content-center">
         {albums.map((alb) => (
           <AlbumCard
             key={alb._id}
