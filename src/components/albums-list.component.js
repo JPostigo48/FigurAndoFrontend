@@ -61,11 +61,11 @@ export default function AlbumsList() {
     const savedUser = localStorage.getItem("user");
     if (!savedUser) return;
     const user = JSON.parse(savedUser);
-
+    const idUser = user._id ?? user.id;
     axios
       .post(
         `${API}/usuarios/albumesIds`,
-        { userId: user.id },
+        { userId: idUser },
       )
       .then((res) => {
         setUserAlbums(res.data || []);

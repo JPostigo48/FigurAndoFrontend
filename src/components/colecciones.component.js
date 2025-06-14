@@ -8,22 +8,24 @@ import { API } from "../api/api";
 // Componente principal que lista las colecciones del usuario
 export default function Colecciones() {
   const [albums, setAlbums] = useState([]);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (!savedUser) return;
     const user = JSON.parse(savedUser);
-
+    const idUser = user._id ?? user.id;
     async function fetchAlbums() {
       try {
         const res = await axios.post(
           `${API}/usuarios/albumes`,
-          { userId: user.id }          
+          { userId: idUser }          
         );
-        setAlbums(res.data);            // aquí recibimos el array de álbumes
+        setAlbums(res.data);           
       } catch (err) {
         console.error("Error cargando álbumes:", err);
+        setError("Error cargando álbumes:"+ err.mensaje);
       }
     }
 
@@ -36,6 +38,14 @@ export default function Colecciones() {
 
   return (
     <div>
+
+      {/* Mensaje de error */}
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
+
       <h2>Mis Colecciones</h2>
       <div className="d-flex flex-wrap">
         {albums.map(album => (

@@ -10,17 +10,17 @@ export default class CreateAlbum extends Component {
     this.state = {
       nombre: "",
       editorial: "",
-      imagen: "",          
-      figurasDisplay: [],           
-      figurasIds: [],               
-
+      imagen: "",
+      figurasDisplay: [],
+      figurasIds: [],
       currentTipo: "",
-      currentIndex: ""
+      currentIndex: "",
+      error: ""            // ← nuevo estado para errores
     };
 
     this.onChangeNombre       = this.onChangeNombre.bind(this);
     this.onChangeEditorial    = this.onChangeEditorial.bind(this);
-    this.onChangeImagen       = this.onChangeImagen.bind(this);    // ← bind
+    this.onChangeImagen       = this.onChangeImagen.bind(this);
     this.onChangeCurrentTipo  = this.onChangeCurrentTipo.bind(this);
     this.onChangeCurrentIndex = this.onChangeCurrentIndex.bind(this);
     this.onAddFigura          = this.onAddFigura.bind(this);
@@ -28,49 +28,52 @@ export default class CreateAlbum extends Component {
   }
 
   onChangeNombre(e) {
-    this.setState({ nombre: e.target.value });
+    this.setState({ nombre: e.target.value, error: "" });
   }
 
   onChangeEditorial(e) {
-    this.setState({ editorial: e.target.value });
+    this.setState({ editorial: e.target.value, error: "" });
   }
 
   onChangeImagen(e) {
-    this.setState({ imagen: e.target.value });
+    this.setState({ imagen: e.target.value, error: "" });
   }
 
   onChangeCurrentTipo(e) {
-    this.setState({ currentTipo: e.target.value });
+    this.setState({ currentTipo: e.target.value, error: "" });
   }
 
   onChangeCurrentIndex(e) {
-    this.setState({ currentIndex: e.target.value });
+    this.setState({ currentIndex: e.target.value, error: "" });
   }
 
   async onAddFigura(e) {
     e.preventDefault();
     const { nombre, currentTipo, currentIndex } = this.state;
     if (!currentTipo || !currentIndex || !nombre) {
-      return alert("Debes ingresar nombre de álbum y datos de la figura");
+      return this.setState({ error: "Debes ingresar nombre de álbum y datos de la figura" });
     }
 
     try {
       const payload = { album: nombre, code: currentIndex, tipo: currentTipo };
       const res = await axios.post(`${API}/figuras/add`, payload);
       const nuevaFigura = res.data;
+      const id_nueva = nuevaFigura._id ?? nuevaFigura.id;
 
       this.setState(prev => ({
         figurasDisplay: [
           ...prev.figurasDisplay,
-          { id: nuevaFigura.id, tipo: currentTipo, index: currentIndex }
+          { id: id_nueva, tipo: currentTipo, index: currentIndex }
         ],
-        figurasIds: [...prev.figurasIds, nuevaFigura.id],
+        figurasIds: [...prev.figurasIds, id_nueva],
         currentTipo: "",
-        currentIndex: ""
+        currentIndex: "",
+        error: ""
       }));
     } catch (err) {
-      console.error("Error creando figura:", err.response || err.message);
-      alert("No se pudo crear la figura");
+      this.setState({
+        error: "Error creando figura: " + (err.response?.data?.error || err.message)
+      });
     }
   }
 
@@ -78,25 +81,34 @@ export default class CreateAlbum extends Component {
     e.preventDefault();
     const { nombre, editorial, imagen, figurasIds } = this.state;
     if (!imagen) {
-      return alert("Debes proporcionar la URL de la imagen del álbum");
+      return this.setState({ error: "Debes proporcionar la URL de la imagen del álbum" });
     }
     if (!figurasIds.length) {
-      return alert("Agrega al menos una figura antes de crear el álbum");
+      return this.setState({ error: "Agrega al menos una figura antes de crear el álbum" });
     }
 
     const newAlbum = { nombre, editorial, imagen, figuras: figurasIds };
+    console.log(newAlbum)
     try {
-      const res = await axios.post(`${API}/albumes/add`, newAlbum);
-      console.log("Álbum creado:", res.data);
+      await axios.post(`${API}/albumes/add`, newAlbum);
       window.location = "/";
     } catch (err) {
-      console.error("Error creando álbum:", err.response || err.message);
-      alert("No se pudo crear el álbum.");
+      this.setState({
+        error: "Error creando álbum: " + (err.response?.data?.error || err.message)
+      });
     }
   }
 
   render() {
-    const { nombre, editorial, imagen, figurasDisplay, currentTipo, currentIndex } = this.state;
+    const {
+      nombre,
+      editorial,
+      imagen,
+      figurasDisplay,
+      currentTipo,
+      currentIndex,
+      error
+    } = this.state;
     const tipoOptions = [
       { value: "normal", label: "Normal" },
       { value: "dorado_normal", label: "Dorado Normal" },
@@ -109,48 +121,62 @@ export default class CreateAlbum extends Component {
     return (
       <div>
         <h1>Crear Nuevo Álbum</h1>
+
+        {/* Div de error */}
+        {error && (
+          <div className="alert alert-danger" role="alert">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={this.onSubmit}>
-          {/* Nombre + Editorial */}
           <div className="form-group">
             <label>Nombre del Álbum:</label>
             <input
-              type="text" required className="form-control"
-              value={nombre} onChange={this.onChangeNombre}
+              type="text"
+              required
+              className="form-control"
+              value={nombre}
+              onChange={this.onChangeNombre}
             />
           </div>
           <div className="form-group">
             <label>Editorial:</label>
             <input
-              type="text" required className="form-control"
-              value={editorial} onChange={this.onChangeEditorial}
+              type="text"
+              required
+              className="form-control"
+              value={editorial}
+              onChange={this.onChangeEditorial}
             />
           </div>
-          {/* Nuevo campo Imagen */}
           <div className="form-group">
             <label>URL de la imagen:</label>
             <input
-              type="url" required className="form-control"
+              type="url"
+              required
+              className="form-control"
               placeholder="https://ejemplo.com/portada.jpg"
-              value={imagen} onChange={this.onChangeImagen}
+              value={imagen}
+              onChange={this.onChangeImagen}
             />
           </div>
 
           <hr />
 
-          {/* Lista de figuras en UI */}
           <h5>Listado de Figuras</h5>
           {figurasDisplay.length === 0 && <p>No hay figuras agregadas.</p>}
           <ul className="list-group mb-3">
             {figurasDisplay.map(f => (
               <li key={f.id} className="list-group-item">
-                <strong>{
-                  tipoOptions.find(o => o.value === f.tipo)?.label || f.tipo
-                }</strong> – {f.index}
+                <strong>
+                  {tipoOptions.find(o => o.value === f.tipo)?.label || f.tipo}
+                </strong>{" "}
+                – {f.index}
               </li>
             ))}
           </ul>
 
-          {/* Form para añadir figura */}
           <div className="form-row align-items-end">
             <div className="col">
               <label>Tipo:</label>
@@ -169,7 +195,8 @@ export default class CreateAlbum extends Component {
             <div className="col">
               <label>Code:</label>
               <input
-                type="text" className="form-control"
+                type="text"
+                className="form-control"
                 placeholder="1, T-1, P-funko..."
                 value={currentIndex}
                 onChange={this.onChangeCurrentIndex}
@@ -177,16 +204,19 @@ export default class CreateAlbum extends Component {
               />
             </div>
             <div className="col-auto">
-              <button className="btn btn-secondary" onClick={this.onAddFigura}>
+              <button
+                className="btn btn-secondary"
+                onClick={this.onAddFigura}
+              >
                 Crear Figura
               </button>
             </div>
           </div>
 
-          {/* Botón Crear Álbum */}
           <div className="form-group" style={{ marginTop: 20 }}>
             <input
-              type="submit" value="Finalizar y Crear Álbum"
+              type="submit"
+              value="Finalizar y Crear Álbum"
               className="btn btn-primary"
               style={{
                 width: "100%",

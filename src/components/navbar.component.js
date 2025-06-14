@@ -1,12 +1,12 @@
 // src/components/navbar.component.js
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 export default class Navbar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      menuOpen: false   // controla el collapse
+      menuOpen: false
     };
   }
 
@@ -14,9 +14,13 @@ export default class Navbar extends Component {
     this.setState(prev => ({ menuOpen: !prev.menuOpen }));
   };
 
+  handleLogout = () => {
+    this.props.onLogout();
+  };
+
   render() {
-    const { user, onLogout } = this.props;
-    const { menuOpen } = this.state;
+    const { user } = this.props;
+    const { menuOpen, redirect } = this.state;
 
     return (
       <nav
@@ -78,7 +82,7 @@ export default class Navbar extends Component {
               <span
                 className="nav-link"
                 style={{ cursor: "pointer" }}
-                onClick={onLogout}
+                onClick={this.handleLogout}
               >
                 Cerrar Sesión
               </span>
