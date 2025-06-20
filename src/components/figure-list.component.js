@@ -83,6 +83,20 @@ export default function FigureList() {
     return { key, label, faltan, hojas };
   });
 
+  const handleCopyLink = () => {
+    const saved = localStorage.getItem("user");
+    if (!saved) {
+      return alert("No estás logueado.");
+    }
+    const user = JSON.parse(saved);
+    const userId = user.id || user._id;
+    const link = `${window.location.origin}/${userId}/${albumId}`;
+
+    navigator.clipboard.writeText(link)
+      .then(() => alert(`Link copiado:\n${link}`))
+      .catch(() => alert("Error copiando al portapapeles"));
+  };
+
   return (
     <div>
       <h2>Figuras del Álbum</h2>
@@ -198,6 +212,15 @@ export default function FigureList() {
           </React.Fragment>
         );
       })}
+      {/* Botón Generar Link */}
+      <div className="text-center" style={{ marginTop: 20, marginBottom: 30 }}>
+        <button
+          className="btn btn-info"
+          onClick={handleCopyLink}
+        >
+          Obtener mi link
+        </button>
+      </div>
     </div>
   );
 }
