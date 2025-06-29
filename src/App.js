@@ -11,6 +11,7 @@ import Colecciones        from "./components/colecciones.component";
 import AlbumsList         from "./components/albums-list.component";
 import FigureList         from "./components/figure-list.component";
 import ViewFigureList     from "./components/view-figure-list.component";
+import EditAlbum from "./components/edit-album.component";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -34,13 +35,14 @@ export default function App() {
       <br />
       <Routes>
         {/* Ruta pública */}
-        <Route path="/:userId/:albumId" element={<ViewFigureList />} />
+        <Route path="/link/:userId/:albumId" element={<ViewFigureList />} />
 
         {/* Rutas autenticadas */}
         <Route path="/" element={<AlbumsList />} />
         <Route path="/my/albums" element={<Colecciones />} />
         <Route path="/my/albums/:id" element={<FigureList />} />
-        <Route path="/crearalbum" element={<CreateAlbum />} />
+        <Route path="/crear-album" element={<CreateAlbum />} />
+        <Route path="/edit-album/:id" element={<EditAlbum />} />
         <Route path="/user" element={<CreateUser />} />
         <Route
           path="/login"

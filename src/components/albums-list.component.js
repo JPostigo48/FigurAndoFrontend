@@ -4,7 +4,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { API } from "../api/api";
 
-export function AlbumCard({ album, isAdded, onAdd }) {
+export function AlbumCard({ album, isAdded, onAdd, onEdit, isAdmin }) {
   return (
     <div className="card m-2" style={{ width: "220px" }}>
       <img
@@ -31,6 +31,14 @@ export function AlbumCard({ album, isAdded, onAdd }) {
             Añadir
           </button>
         )}
+        {isAdmin && (
+          <button
+            className="btn btn-sm btn-warning mt-2"
+            onClick={() => onEdit(album._id)}
+          >
+            Modificar
+          </button>
+        )}
       </div>
     </div>
   );
@@ -41,6 +49,11 @@ export default function AlbumsList() {
   const [userAlbums, setUserAlbums] = useState([]);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  // Extraemos rol del usuario de localStorage
+  const saved = localStorage.getItem("user");
+  const user = saved ? JSON.parse(saved) : null;
+  const isAdmin = user?.rol === "admin";
 
   // Carga de todos los álbumes
   useEffect(() => {
@@ -58,15 +71,10 @@ export default function AlbumsList() {
 
   // Carga de álbumes del usuario
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    if (!savedUser) return;
-    const user = JSON.parse(savedUser);
+    if (!user) return;
     const idUser = user._id ?? user.id;
     axios
-      .post(
-        `${API}/usuarios/albumesIds`,
-        { userId: idUser },
-      )
+      .post(`${API}/usuarios/albumesIds`, { userId: idUser })
       .then((res) => {
         setUserAlbums(res.data || []);
         setError("");
@@ -75,7 +83,7 @@ export default function AlbumsList() {
         console.error("Error cargando álbumes IDs:", err);
         setError("No se pudieron cargar tus colecciones: " + err.message);
       });
-  }, []);
+  }, [user]);
 
   // Handler para añadir un álbum
   const handleAdd = async (albumId) => {
@@ -87,13 +95,21 @@ export default function AlbumsList() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       localStorage.setItem("user", JSON.stringify(data.usuario));
-      setUserAlbums(data.usuario.albumesUsuario.map(a => a._id));
+      setUserAlbums(data.usuario.albumesUsuario.map((a) => a._id));
       setError("");
       alert("Álbum y figuras inicializadas.");
     } catch (err) {
       console.error(err);
-      setError("No se pudo añadir el álbum: " + (err.response?.data.error || err.message));
+      setError(
+        "No se pudo añadir el álbum: " +
+          (err.response?.data.error || err.message)
+      );
     }
+  };
+
+  // Handler para editar un álbum
+  const handleEdit = (albumId) => {
+    navigate(`/edit-album/${albumId}`);
   };
 
   return (
@@ -114,6 +130,8 @@ export default function AlbumsList() {
             album={alb}
             isAdded={userAlbums.includes(alb._id)}
             onAdd={handleAdd}
+            isAdmin={isAdmin}
+            onEdit={handleEdit}
           />
         ))}
       </div>

@@ -61,7 +61,7 @@ export default class Navbar extends Component {
             </Link>
 
             {user && user.rol === "admin" && (
-              <Link className="nav-link" to="/crearalbum">
+              <Link className="nav-link" to="/crear-album">
                 Crear Álbum
               </Link>
             )}

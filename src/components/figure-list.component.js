@@ -90,7 +90,7 @@ export default function FigureList() {
     }
     const user = JSON.parse(saved);
     const userId = user.id || user._id;
-    const link = `${window.location.origin}/${userId}/${albumId}`;
+    const link = `${window.location.origin}/link/${userId}/${albumId}`;
 
     navigator.clipboard.writeText(link)
       .then(() => alert(`Link copiado:\n${link}`))
@@ -102,6 +102,7 @@ export default function FigureList() {
       <h2>Figuras del Álbum</h2>
 
       {grouped.map((section, idx) => {
+        // console.log(section)
         if (!section.hojas.length) return null;
         const isLastSection = idx === grouped.length - 1;
 
