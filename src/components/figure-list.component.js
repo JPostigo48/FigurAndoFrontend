@@ -74,17 +74,19 @@ export default function FigureList() {
 
   const updateCount = async (figuraId, delta) => {
     try {
-      const r = await axios.post(
+      const res = await axios.post(
         `${API}/usuarios/update-figura`,
         { figuraId, delta },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      const { figuraId: id, count } = r.data;
-      setItems(prev => prev.map(i =>
-        i.figura._id === id ? { ...i, count } : i
-      ));
-    } catch {
-      setErrors(e => [...e, "Error actualizando la cantidad"]);
+      const { figuraId: id, count } = res.data;
+      setItems(prev =>
+        prev.map(it =>
+          it.figura._id === id ? { ...it, count } : it
+        )
+      );
+    } catch (err) {
+      console.error("Error actualizando count:", err);
     }
   };
 

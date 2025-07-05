@@ -82,7 +82,7 @@ export default function EditAlbum() {
     if (!newKey.trim() || !newLabel.trim()) {
       return setError("Completa key y label de la categoría");
     }
-    axios.post(`${API}/albumes/${albumId}/add-tipo`, {
+    axios.post(`${API}/albumes/${albumId}/tipos/add`, {
       key: newKey.trim(),
       label: newLabel.trim()
     })
@@ -125,7 +125,7 @@ export default function EditAlbum() {
 
   // Eliminar categoría
   const handleDeleteTipo = key => {
-    axios.post(`${API}/albumes/${albumId}/delete-tipo`, { key })
+    axios.post(`${API}/albumes/${albumId}/tipos/delete`, { key })
       .then(r => setAlbum(a => ({ ...a, tipos: r.data.tipos })))
       .catch(() => setError("Error eliminando categoría"));
   };
