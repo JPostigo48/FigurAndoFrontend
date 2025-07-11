@@ -117,6 +117,19 @@ export default function FigureList() {
     setOpenSections(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
+  const handleCopyLink = () => {
+    const saved = localStorage.getItem("user");
+    if (!saved) {
+      return alert("No estás logueado.");
+    }
+    const user = JSON.parse(saved);
+    const userId = user.id || user._id;
+    const link = `${window.location.origin}/link/${userId}/${albumId}`;
+
+    navigator.clipboard.writeText(link)
+      .then(() => alert(`Link copiado:\n${link}`))
+  }
+
   // agrupo
   const grouped = tipos.map(({ key, label }) => {
     const list   = items.filter(i => i.figura.tipo === key);
@@ -126,6 +139,7 @@ export default function FigureList() {
       hojas.push(list.slice(i, i + 9));
     return { key, label, faltan, hojas };
   });
+
 
   return (
     <div>
@@ -246,10 +260,7 @@ export default function FigureList() {
       <div className="text-center my-4">
         <button
           className="btn btn-info"
-          onClick={() => {
-            navigator.clipboard.writeText(window.location.href);
-            alert("Link copiado!");
-          }}
+          onClick={handleCopyLink}
         >
           Obtener mi link
         </button>
