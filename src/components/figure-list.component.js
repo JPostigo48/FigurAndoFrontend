@@ -1,11 +1,12 @@
 // src/components/figure-list.component.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { API } from "../api/api";
 
 export default function FigureList() {
   const { id: albumId } = useParams();
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   const [items,        setItems]        = useState([]);
@@ -155,6 +156,27 @@ export default function FigureList() {
         <h1>Figuras del Álbum: <em>{albumName}</em></h1>
       </div>
 
+      <div className="text-center my-4">
+        <button
+          className="btn btn-info me-2"
+          onClick={handleCopyLink}
+        >
+          Obtener mi link
+        </button>
+        <button
+          className="btn btn-info me-2"
+          onClick={() => navigate(`/my/albums/${albumId}/pedido`)}
+        >
+          Crear Pedido
+        </button>
+        <button
+          className="btn btn-info"
+          onClick={() => navigate(`/my/albums/${albumId}/ver-pedidos`)}
+        >
+          Ver Pedidos
+        </button>
+      </div>
+
       {grouped.map((sec, idx) => {
         if (!sec.hojas.length) return null;
         const isComplete = sec.faltan === 0;
@@ -256,15 +278,6 @@ export default function FigureList() {
           </React.Fragment>
         );
       })}
-
-      <div className="text-center my-4">
-        <button
-          className="btn btn-info"
-          onClick={handleCopyLink}
-        >
-          Obtener mi link
-        </button>
-      </div>
     </div>
   );
 }

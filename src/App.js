@@ -12,6 +12,8 @@ import AlbumsList         from "./components/albums-list.component";
 import FigureList         from "./components/figure-list.component";
 import ViewFigureList     from "./components/view-figure-list.component";
 import EditAlbum from "./components/edit-album.component";
+import CreateOrder from "./components/create-order.component";
+import ViewOrders from "./components/view-order.component";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -41,6 +43,8 @@ export default function App() {
         <Route path="/" element={<AlbumsList />} />
         <Route path="/my/albums" element={<Colecciones />} />
         <Route path="/my/albums/:id" element={<FigureList />} />
+        <Route path="/my/albums/:id/pedido" element={<CreateOrder />} />
+        <Route path="/my/albums/:id/ver-pedidos" element={<ViewOrders />} />
         <Route path="/crear-album" element={<CreateAlbum />} />
         <Route path="/edit-album/:id" element={<EditAlbum />} />
         <Route path="/user" element={<CreateUser />} />
